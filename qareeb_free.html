@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#101020">
+  <title>Qareeb - قريب</title>
+  <style>
+    *{box-sizing:border-box;font-family:Arial,sans-serif}
+    body{margin:0;min-height:100vh;background:#101020;color:#fff}
+    .screen{display:none;min-height:100vh;padding:24px 16px;align-items:center;justify-content:center}
+    .screen.active{display:flex}
+    .card{width:100%;max-width:430px;padding:26px 20px;border:1px solid #34344d;border-radius:24px;background:#19192b;box-shadow:0 15px 45px #0004}
+    .logo{text-align:center;font-size:38px;font-weight:bold;color:#b89aff;margin-bottom:8px}
+    h1,h2,p{text-align:center}h2{margin:10px 0}
+    .muted{color:#aaaac1;line-height:1.7;font-size:14px}
+    label{display:block;margin:16px 0 7px;color:#e4e1f7;font-size:14px}
+    input,textarea{width:100%;padding:13px;color:white;background:#101020;border:1px solid #41415b;border-radius:12px;outline:none;font-size:15px}
+    input:focus,textarea:focus{border-color:#a98aff}
+    input[type=file]{font-size:12px}textarea{resize:vertical;min-height:90px}
+    button{width:100%;padding:14px;margin-top:15px;border:0;border-radius:12px;background:linear-gradient(135deg,#a78bfa,#7656dc);color:white;font-size:16px;font-weight:bold;cursor:pointer}
+    button:disabled{opacity:.55;cursor:wait}.google{background:#fff;color:#222}.secondary{background:#303047}
+    .message{margin-top:14px;font-size:13px;line-height:1.7;color:#ffb7b7;text-align:center;overflow-wrap:anywhere}
+    .success{color:#8ee8b0}.avatar{display:block;width:110px;height:110px;object-fit:cover;margin:15px auto;border-radius:50%;border:3px solid #a78bfa;background:#303047}
+    .interests{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px}
+    .interest{display:flex;align-items:center;gap:8px;padding:11px;margin:0;border-radius:10px;background:#101020;border:1px solid #41415b}
+    .interest input{width:auto;accent-color:#a78bfa}.profile-head{text-align:center}.profile-head .avatar{width:125px;height:125px}
+    .pill{display:inline-block;background:#303047;color:#d5c6ff;border-radius:20px;padding:7px 11px;margin:4px;font-size:12px}
+    .hint{font-size:12px;color:#aaaac1;line-height:1.7;text-align:center}
+  </style>
+</head>
+<body>
+  <section id="splash" class="screen active">
+    <div><div class="logo">Qareeb</div><p class="muted">قريب منك.. أقرب لقلبك ❤️</p></div>
+  </section>
+
+  <section id="login" class="screen">
+    <div class="card">
+      <div class="logo">Qareeb</div><h2>أهلاً بيك 👋</h2>
+      <p class="muted">سجّل دخولك وابدأ تتعرف على ناس جديدة.</p>
+      <button id="googleBtn" class="google">🌐 تسجيل الدخول باستخدام Google</button>
+      <p id="loginMessage" class="message"></p>
+    </div>
+  </section>
+
+  <section id="profileSetup" class="screen">
+    <div class="card">
+      <div class="logo">Qareeb</div><h2>كمّل بروفايلك ✨</h2>
+      <p class="muted">عرّف الناس عليك عشان يقدروا يتعرفوا عليك.</p>
+      <form id="profileForm">
+        <label for="photo">صورة البروفايل</label>
+        <img id="photoPreview" class="avatar" src="https://placehold.co/200x200/303047/ffffff?text=Qareeb" alt="صورة البروفايل">
+        <input id="photo" type="file" accept="image/*">
+        <label for="displayName">اسم المستخدم</label>
+        <input id="displayName" type="text" maxlength="30" placeholder="اكتب اسمك" required>
+        <label for="age">العمر</label>
+        <input id="age" type="number" min="18" max="100" placeholder="عمرك كام؟" required>
+        <label for="bio">نبذة عنك</label>
+        <textarea id="bio" maxlength="200" placeholder="اكتب نبذة بسيطة عن نفسك..."></textarea>
+        <label>اهتماماتك</label>
+        <div class="interests">
+          <label class="interest"><input type="checkbox" name="interest" value="الألعاب"> 🎮 الألعاب</label>
+          <label class="interest"><input type="checkbox" name="interest" value="الموسيقى"> 🎵 الموسيقى</label>
+          <label class="interest"><input type="checkbox" name="interest" value="الرياضة"> ⚽ الرياضة</label>
+          <label class="interest"><input type="checkbox" name="interest" value="السفر"> ✈️ السفر</label>
+          <label class="interest"><input type="checkbox" name="interest" value="الأفلام"> 🎬 الأفلام</label>
+          <label class="interest"><input type="checkbox" name="interest" value="القراءة"> 📚 القراءة</label>
+        </div>
+        <button id="saveProfileBtn" type="submit">حفظ البروفايل والمتابعة</button>
+        <p id="profileMessage" class="message"></p>
+      </form>
+    </div>
+  </section>
+
+  <section id="home" class="screen">
+    <div class="card">
+      <div class="logo">Qareeb</div>
+      <div class="profile-head">
+        <img id="homePhoto" class="avatar" alt="صورتك">
+        <h2 id="homeName">أهلاً بيك</h2>
+        <p id="homeAge" class="muted"></p>
+        <p id="homeBio" class="muted"></p>
+        <h3>اهتماماتي</h3><div id="homeInterests"></div>
+      </div>
+      <p class="muted">تم تسجيل دخولك. تقدر تعدّل بيانات بروفايلك من هنا.</p>
+      <button id="editProfileBtn" class="secondary">تعديل البروفايل</button>
+      <button id="logoutBtn" class="secondary">تسجيل الخروج</button>
+      <p id="homeMessage" class="message"></p>
+    </div>
+  </section>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-app.js";
+    import {
+      getAuth, GoogleAuthProvider, signInWithRedirect, getRedirectResult,
+      onAuthStateChanged, signOut, setPersistence, browserLocalPersistence
+    } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-auth.js";
+    import {
+      getFirestore, doc, getDoc, setDoc, serverTimestamp
+    } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-firestore.js";
+
+    // بيانات مشروع Firebase التي أرسلتها
+    const firebaseConfig = {
+      apiKey: "AIzaSyDCQ6VJQQ6Ulix0k2EFTcu6cw5dX-5x2qg",
+      authDomain: "qareeb-bdea3.firebaseapp.com",
+      projectId: "qareeb-bdea3",
+      storageBucket: "qareeb-bdea3.firebasestorage.app",
+      messagingSenderId: "584967859437",
+      appId: "1:584967859437:web:07a822f22a9d24bd41b0e4",
+      measurementId: "G-6228R91LG4"
+    };
+
+    const $ = id => document.getElementById(id);
+    const screens = ["splash", "login", "profileSetup", "home"];
+    let auth, db, currentUser = null, currentProfile = null, isSaving = false;
+
+    function showScreen(id) {
+      screens.forEach(s => $(s).classList.toggle("active", s === id));
+    }
+    function setMessage(id, message, success = false) {
+      $(id).textContent = message;
+      $(id).classList.toggle("success", success);
+    }
+
+    async function startApp() {
+      try {
+        const app = initializeApp(firebaseConfig);
+        auth = getAuth(app);
+        db = getFirestore(app);
+        await setPersistence(auth, browserLocalPersistence);
+
+        try {
+          await getRedirectResult(auth);
+        } catch (error) {
+          console.error("Google redirect error:", error);
+          setMessage("loginMessage", "تعذر إكمال تسجيل الدخول: " + error.message);
+        }
+
+        onAuthStateChanged(auth, async user => {
+          currentUser = user;
+          if (!user) {
+            currentProfile = null;
+            showScreen("login");
+            $("googleBtn").disabled = false;
+            return;
+          }
+
+          showScreen("splash");
+          try {
+            const snap = await getDoc(doc(db, "users", user.uid));
+            if (snap.exists()) {
+              currentProfile = snap.data();
+              showHome(currentProfile);
+            } else {
+              currentProfile = null;
+              prepareProfileForm(user);
+              showScreen("profileSetup");
+            }
+          } catch (error) {
+            console.error(error);
+            showScreen("login");
+            setMessage("loginMessage", "تعذر قراءة البروفايل. راجع قواعد Firestore: " + error.message);
+          }
+        });
+      } catch (error) {
+        console.error(error);
+        showScreen("login");
+        setMessage("loginMessage", "فشل تشغيل Firebase: " + error.message);
+      }
+    }
+
+    $("googleBtn").addEventListener("click", async () => {
+      if (!auth) {
+        setMessage("loginMessage", "انتظر تحميل التطبيق ثم جرّب مرة أخرى.");
+        return;
+      }
+      $("googleBtn").disabled = true;
+      setMessage("loginMessage", "جاري فتح تسجيل الدخول...");
+      try {
+        const provider = new GoogleAuthProvider();
+        provider.setCustomParameters({ prompt: "select_account" });
+        await signInWithRedirect(auth, provider);
+      } catch (error) {
+        console.error(error);
+        $("googleBtn").disabled = false;
+        setMessage("loginMessage", "تعذر تسجيل الدخول: " + error.message);
+      }
+    });
+
+    function prepareProfileForm(user) {
+      $("displayName").value = currentProfile?.name || user.displayName || "";
+      $("age").value = currentProfile?.age || "";
+      $("bio").value = currentProfile?.bio || "";
+      $("photoPreview").src = currentProfile?.photoURL || user.photoURL ||
+        "https://placehold.co/200x200/303047/ffffff?text=Qareeb";
+      const selected = currentProfile?.interests || [];
+      document.querySelectorAll('input[name="interest"]').forEach(input => {
+        input.checked = selected.includes(input.value);
+      });
+      $("photo").value = "";
+      setMessage("profileMessage", "");
+    }
+
+    $("photo").addEventListener("change", event => {
+      const file = event.target.files[0];
+      if (!file) return;
+      if (!file.type.startsWith("image/")) {
+        setMessage("profileMessage", "اختار ملف صورة صحيح.");
+        event.target.value = "";
+        return;
+      }
+      if (file.size > 5 * 1024 * 1024) {
+        setMessage("profileMessage", "حجم الصورة الأصلية لازم يكون 5 ميجابايت أو أقل.");
+        event.target.value = "";
+        return;
+      }
+      $("photoPreview").src = URL.createObjectURL(file);
+      setMessage("profileMessage", "هنضغط الصورة تلقائيًا عشان نوفر المساحة المجانية.", true);
+    });
+
+    // يضغط الصورة داخل المتصفح ويحفظها في Firestore بدل Firebase Storage المدفوع.
+    function compressImage(file) {
+      return new Promise((resolve, reject) => {
+        const image = new Image();
+        const objectUrl = URL.createObjectURL(file);
+        image.onload = () => {
+          URL.revokeObjectURL(objectUrl);
+          const maxSide = 320;
+          const scale = Math.min(1, maxSide / Math.max(image.width, image.height));
+          const canvas = document.createElement("canvas");
+          canvas.width = Math.max(1, Math.round(image.width * scale));
+          canvas.height = Math.max(1, Math.round(image.height * scale));
+          const context = canvas.getContext("2d");
+          context.drawImage(image, 0, 0, canvas.width, canvas.height);
+          resolve(canvas.toDataURL("image/jpeg", 0.62));
+        };
+        image.onerror = () => { URL.revokeObjectURL(objectUrl); reject(new Error("تعذر قراءة الصورة.")); };
+        image.src = objectUrl;
+      });
+    }
+
+    $("profileForm").addEventListener("submit", async event => {
+      event.preventDefault();
+      if (!currentUser || isSaving) return;
+
+      const name = $("displayName").value.trim();
+      const age = Number($("age").value);
+      const bio = $("bio").value.trim();
+      const interests = [...document.querySelectorAll('input[name="interest"]:checked')]
+        .map(input => input.value);
+      const photoFile = $("photo").files[0];
+
+      if (name.length < 2 || name.length > 30) {
+        setMessage("profileMessage", "الاسم لازم يكون من حرفين إلى 30 حرف.");
+        return;
+      }
+      if (!Number.isInteger(age) || age < 18 || age > 100) {
+        setMessage("profileMessage", "التطبيق مخصص لمن أعمارهم 18 سنة أو أكثر.");
+        return;
+      }
+      if (bio.length > 200) {
+        setMessage("profileMessage", "النبذة طويلة جدًا.");
+        return;
+      }
+      if (photoFile && (!photoFile.type.startsWith("image/") || photoFile.size > 5 * 1024 * 1024)) {
+        setMessage("profileMessage", "اختار صورة صحيحة حجمها 5 ميجابايت أو أقل.");
+        return;
+      }
+
+      isSaving = true;
+      $("saveProfileBtn").disabled = true;
+      setMessage("profileMessage", "جاري حفظ البروفايل...");
+      try {
+        let photoURL = currentProfile?.photoURL || currentUser.photoURL || "";
+        if (photoFile) {
+          photoURL = await compressImage(photoFile);
+          // حد احتياطي لتفادي اقتراب مستند Firestore من الحد الأقصى 1 MiB.
+          if (photoURL.length > 700000) {
+            throw new Error("الصورة كبيرة بعد الضغط؛ اختار صورة أبسط أو أصغر.");
+          }
+        }
+
+        const profileData = {
+          uid: currentUser.uid,
+          name, age, bio, interests, photoURL,
+          email: currentUser.email || "",
+          updatedAt: serverTimestamp()
+        };
+        if (!currentProfile) profileData.createdAt = serverTimestamp();
+
+        await setDoc(doc(db, "users", currentUser.uid), profileData, { merge: true });
+        const saved = await getDoc(doc(db, "users", currentUser.uid));
+        currentProfile = saved.data();
+        showHome(currentProfile);
+      } catch (error) {
+        console.error(error);
+        setMessage("profileMessage", "فشل الحفظ: " + error.message + " — راجع إعدادات Firestore وقواعده.");
+      } finally {
+        isSaving = false;
+        $("saveProfileBtn").disabled = false;
+      }
+    });
+
+    function showHome(profile) {
+      showScreen("home");
+      $("homeName").textContent = profile.name || "مستخدم Qareeb";
+      $("homeAge").textContent = profile.age ? `${profile.age} سنة` : "";
+      $("homeBio").textContent = profile.bio || "لسه مفيش نبذة عن المستخدم.";
+      $("homePhoto").src = profile.photoURL ||
+        "https://placehold.co/200x200/303047/ffffff?text=Qareeb";
+      $("homeInterests").replaceChildren();
+      (profile.interests || []).forEach(interest => {
+        const pill = document.createElement("span");
+        pill.className = "pill";
+        pill.textContent = interest;
+        $("homeInterests").appendChild(pill);
+      });
+      setMessage("homeMessage", "بروفايلك محفوظ بنجاح.", true);
+    }
+
+    $("editProfileBtn").addEventListener("click", () => {
+      if (!currentUser) return;
+      prepareProfileForm(currentUser);
+      showScreen("profileSetup");
+    });
+
+    $("logoutBtn").addEventListener("click", async () => {
+      if (!auth) return;
+      try {
+        await signOut(auth);
+        currentProfile = null;
+        showScreen("login");
+        setMessage("loginMessage", "تم تسجيل الخروج.", true);
+      } catch (error) {
+        setMessage("homeMessage", "تعذر تسجيل الخروج: " + error.message);
+      }
+    });
+
+    startApp();
+  </script>
+</body>
+</html>
